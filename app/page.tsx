@@ -1,5 +1,19 @@
 import Image from "next/image";
-
+import ProjectList from '@/components/ProjectList';
+const projects = [
+  {
+    title: 'White Water Rafting',
+    description: 'To rivers and review trips.',
+    technologies: ['HTML', 'JSON', 'CSS'],
+    link: 'https://pjworsham.github.io/wdd130/'
+  },
+  {
+    title: 'Cherokee Chamber of Commerce',
+    description: 'Displays members of Chamber of Commerce.',
+    technologies: ['HTML', 'JSON', 'CSS'],
+    link: 'https://pjworsham.github.io/wdd231/'
+  }
+];
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
