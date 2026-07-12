@@ -1,3 +1,9 @@
-export default function ProjectsPage() {
-	return <h1>Projects Overview</h1>;
+import ProjectList from '../../components/ProjectList';
+
+import { fetchProjects } from './lib/fetch-projects';
+
+export default async function ProjectsPage() {
+	const projects = await fetchProjects();
+
+	return <ProjectList projects={projects} />;
 }
