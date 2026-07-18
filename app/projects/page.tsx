@@ -1,5 +1,5 @@
 import ProjectList from '../../components/ProjectList';
-import { fetchProjects } from './lib/fetch-projects';
+import { fetchFilteredProjects } from './lib/projects-db';
 
 export default async function ProjectsPage({
   searchParams,
@@ -11,7 +11,12 @@ export default async function ProjectsPage({
 }) {
   const { query, page } = await searchParams;
 
-  const projects = await fetchProjects(query, page);
+  const currentPage = Number(page) || 1;
+
+  const projects = await fetchFilteredProjects(
+    query ?? '',
+    currentPage
+  );
 
   return <ProjectList projects={projects} />;
 }
