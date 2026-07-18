@@ -31,3 +31,4 @@ export async function fetchProjects(type?: ProjectType): Promise<Project[]> {
 
   return response.json();
 }
+
