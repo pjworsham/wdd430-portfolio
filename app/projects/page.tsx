@@ -1,5 +1,5 @@
 import ProjectList from '../../components/ProjectList';
-import { fetchFilteredProjects } from './lib/projects-db';
+import { fetchFilteredProjects } from '../lib/projects-db';
 
 export default async function ProjectsPage({
   searchParams,
