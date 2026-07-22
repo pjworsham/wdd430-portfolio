@@ -1,4 +1,3 @@
-// app/lib/actions.ts
 'use server';
 
 import { z } from 'zod';
@@ -12,6 +11,17 @@ const ProjectFormSchema = z.object({
   technologies: z.string().min(2),
 });
 
+function formatTechnologies(technologies: string): string {
+  const technologyList = technologies
+    .split(',')
+    .map((technology) => technology.trim())
+    .filter(Boolean);
+
+  return `{${technologyList
+    .map((technology) => `"${technology.replace(/"/g, '\\"')}"`)
+    .join(',')}}`;
+}
+
 export async function createProject(formData: FormData) {
   const raw = {
     title: formData.get('title'),
@@ -20,22 +30,35 @@ export async function createProject(formData: FormData) {
   };
 
   const parsed = ProjectFormSchema.safeParse(raw);
+
   if (!parsed.success) {
     throw new Error('Invalid project input.');
   }
 
   const { title, description, technologies } = parsed.data;
+  const technologyArray = formatTechnologies(technologies);
 
   await sql`
-    INSERT INTO projects (title, description, technologies)
-    VALUES (${title}, ${description}, ${technologies})
+    INSERT INTO projects (
+      title,
+      description,
+      technologies
+    )
+    VALUES (
+      ${title},
+      ${description},
+      ${technologyArray}::text[]
+    )
   `;
 
   revalidatePath('/projects');
   redirect('/projects');
 }
 
-export async function updateProject(id: string, formData: FormData) {
+export async function updateProject(
+  id: string,
+  formData: FormData
+) {
   const raw = {
     title: formData.get('title'),
     description: formData.get('description'),
@@ -43,18 +66,20 @@ export async function updateProject(id: string, formData: FormData) {
   };
 
   const parsed = ProjectFormSchema.safeParse(raw);
+
   if (!parsed.success) {
     throw new Error('Invalid project input.');
   }
 
   const { title, description, technologies } = parsed.data;
+  const technologyArray = formatTechnologies(technologies);
 
   await sql`
     UPDATE projects
     SET
       title = ${title},
       description = ${description},
-      technologies = ${technologies}
+      technologies = ${technologyArray}::text[]
     WHERE id = ${id}
   `;
 
